@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -24,7 +25,7 @@ class TaskController extends Controller
         // Filtrar por vencimiento
         if ($request->has('overdue') && $request->overdue === 'true') {
             $query->where('due_date', '<', now())
-                  ->where('completed', false);
+                ->where('completed', false);
         }
 
         $tasks = $query->latest()->get();
@@ -54,7 +55,7 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         // Verificar que el usuario actual sea el propietario
-        $this->authorize('view', $task);
+        Gate::authorize('view', $task);
 
         $task->load('comments.user');
 
@@ -64,7 +65,7 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         // Verificar que el usuario actual sea el propietario
-        $this->authorize('update', $task);
+        Gate::authorize('update', $task);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -82,7 +83,7 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         // Verificar que el usuario actual sea el propietario
-        $this->authorize('delete', $task);
+        Gate::authorize('delete', $task);
 
         $task->delete();
 
@@ -92,7 +93,7 @@ class TaskController extends Controller
     public function toggleComplete(Task $task)
     {
         // Verificar que el usuario actual sea el propietario
-        $this->authorize('update', $task);
+        Gate::authorize('update', $task);
 
         $task->completed = !$task->completed;
         $task->save();
