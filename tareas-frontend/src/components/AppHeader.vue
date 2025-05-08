@@ -3,7 +3,7 @@
     <div class="container">
       <div class="logo">
         <router-link to="/" class="logo-link">
-          Task Manager
+          Administrador de tareas
         </router-link>
       </div>
 
